@@ -7,5 +7,7 @@ defmodule UserApiV4Web.Router do
 
   scope "/api", UserApiV4Web do
     pipe_through :api
+
+    get "/", DefaultController, :index
   end
 end
