@@ -15,7 +15,7 @@ defmodule UserApiV4.Users.User do
     field :photo, :string
     field :zone, :string
     #field :account_id, :binary_id
-    belongs_to :account_id, UserApiV4.Accounts.Account
+    belongs_to :account, UserApiV4.Accounts.Account
 
     timestamps()
   end
@@ -23,7 +23,7 @@ defmodule UserApiV4.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:acount_id, :name, :middle_name, :last_name, :phone, :birthdate, :id_auth0, :zone, :language, :photo])
+    |> cast(attrs, [:account_id, :name, :middle_name, :last_name, :phone, :birthdate, :id_auth0, :zone, :language, :photo])
     |> validate_required([:account_id])#:name, :middle_name, :last_name, :phone, :birthdate, :id_auth0, :zone, :language, :photo
   end
 end
