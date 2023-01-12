@@ -1,0 +1,3 @@
+defmodule UserApiV4Web.Auth.ErrorResponse.Unauthorized do
+  defexception [message: "Unauthorized", plug_status: 401]
+end

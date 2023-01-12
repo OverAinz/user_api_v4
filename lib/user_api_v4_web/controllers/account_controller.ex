@@ -1,7 +1,7 @@
 defmodule UserApiV4Web.AccountController do
   use UserApiV4Web, :controller
 
-  alias UserApiV4Web.Auth.Guardian
+  alias UserApiV4Web.{Auth.Guardian, Auth.ErrorResponse}
   alias UserApiV4.{Accounts, Accounts.Account, Users, Users.User}
 
 
@@ -19,6 +19,16 @@ defmodule UserApiV4Web.AccountController do
       conn
       |> put_status(:created)
       |> render("account_token.json", account: account, token: token)
+    end
+  end
+
+  def sign_in(conn, %{"email" => email, "hash_password" => hash_password}) do
+    case Guardian.authenticate(email, hash_password) do
+      {:ok, account, token} ->
+        conn
+        |> put_status(:ok)
+        |> render("account_token.json", %{account: account, token: token})
+      {:error, :unauthorized} -> raise ErrorResponse.Unauthorized, message: "Email or password incorrect."
     end
   end
 
