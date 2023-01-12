@@ -1,8 +1,9 @@
 defmodule UserApiV4Web.AccountController do
   use UserApiV4Web, :controller
 
-  alias UserApiV4.Accounts
-  alias UserApiV4.Accounts.Account
+  alias UserApiV4Web.Auth.Guardian
+  alias UserApiV4.{Accounts, Accounts.Account, Users, Users.User}
+
 
   action_fallback UserApiV4Web.FallbackController
 
@@ -12,10 +13,12 @@ defmodule UserApiV4Web.AccountController do
   end
 
   def create(conn, %{"account" => account_params}) do
-    with {:ok, %Account{} = account} <- Accounts.create_account(account_params) do
+    with {:ok, %Account{} = account} <- Accounts.create_account(account_params),
+          {:ok, token, _claims} <- Guardian.encode_and_sign(account),
+          {:ok, %User{} = _user} <- Users.create_user(account, account_params) do
       conn
       |> put_status(:created)
-      |> render("show.json", account: account)
+      |> render("account_token.json", account: account, token: token)
     end
   end
 
