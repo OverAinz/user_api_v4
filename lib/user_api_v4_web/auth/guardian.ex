@@ -1,4 +1,4 @@
-defmodule UserApiV4Web.Guardian do
+defmodule UserApiV4Web.Auth.Guardian do
   use Guardian, otp_app: :user_api_v4
   alias UserApiV4.Accounts
 
@@ -24,7 +24,7 @@ defmodule UserApiV4Web.Guardian do
 
   def authenticate(email, password) do
     case Accounts.get_account_by_email(email) do
-      nil -> {:error, :unauthored}
+      nil -> {:error, :not_found}
       account ->
         case validate_password(password, account.hash_password) do
           true -> create_token(account)
