@@ -22,7 +22,7 @@ defmodule UserApiV4Web.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
+    with {:ok, %User{} = user} <- Accounts.create_user(user_params),
     {:ok, %User{} = user} <- Accounts.update_user(user, Accounts.create_user_auth0(user)) do
       conn
       |> put_status(:created)
@@ -43,7 +43,7 @@ defmodule UserApiV4Web.UserController do
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
 
-    with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
+    with {:ok, %User{} = user} <- Accounts.update_user(user, user_params),
           {:ok, _response} <- Accounts.update_user_auth0(user, user_params) do
       render(conn, "show.json", user: user)
     end
